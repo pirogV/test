@@ -1,63 +1,8 @@
 <?php
 namespace common;
-/**
-* ПОЯСНЕНИЯ
-*______________________________________________________________________________________________________
-*
-* Этот класс был написан для проэкта infocompany.biz
-* 
-* ВАЖНО!!!!!!!
-*
-* В КЛАСЕ РЕАЛИЗОВАН ТОЛЬЕО МИНИНИМАЛЬНО НАОБХОДИМЫЙ ФУНКЦИОНАЛ ДЛЯ ПРОЭКТА
-* не надо искать здесь, например, pg_escape_bytea() поскольку проэкт как то обошелся без этого типа данных.
-* по этой же причине не реализована удобная работа с типом array, не реализованы все возмиожности SQL и др.
-*
-* ЗАДАЧА
-*
-* Стояла задача написать легкий клас для безопасной работы с данными в postgres при этом он должен быть удобным в использовании
-*
-* КАК РАБОТАТЬ С КЛАСОМ
-*
-* Работа с класом похожа на рабрту с PDO, но в отличии от PDO этот клас использует типизированные, именованные плейсхолдеры,
-* не использует подготовленные запросы, неименованные плейсхолдеры и т.д.
-* Ниже некоторые запросы для понимания
-*
-* Оптимизицию запросов здесь не рассматриваем, только работу класса.
-*
-* 	$count = Db::mysql()->query('SELECT COUNT(*) FROM catalog')->scslsr();
-*	
-*	(в postgres такие запросы не пишут, знаю, это для примера)
-*
-* 	$result = Db::mysql()
-*		->query('SELECT * FROM catalog WHERE id = :id AND view = \'Y\'') // Запос содержит метку :id куда клас подставит плейсхолдер
-*		->arr(['int:id' => 1]) // int:id приведет значение к числовому типу(можно спорить, приводить к типу или показывать ошибку), проэскейпит и подставит значение на место :id в запросе
-*		->one(); //вернет первую строку результата
-*
-* 	$result = Db::mysql()
-*		->query('SELECT * FROM catalog WHERE id IN (:id) AND view = :view')
-*		->arr(['str:view' => 'Y', 'in:id' => [1,2,3]])
-*		->all();
-*		отправит серверу как то так запрос: SELECT * FROM ru.catalog WHERE id IN (1, 2, 3) AND view = 'Y'
-*		и ->all() вернет многомерный масив со строками
-*
-*	$result = Db::mysql()
-*		->query('UPDATE catalog SET :sethere WHERE id = 1')
-*		->arr(['set:sethere' => ['parent' => 0, 'sort' => 0, 'head' => 'pupuru', 'title' => 'Helo pupuru', 'view' => 'Y' ]])
-*		->cud('id');
-*		set:sethere сформирует конструкцию SET (SQL) тоесть parent=0, sort = 0, head = 'pupuru', title = 'Helo pupuru', view = 'Y'
-*		->cud('id') вернет id затронутой строки, можно insertId при INSERT, все затронутые строки и т. д. см. RETURNING Postgres
-*
-* Все возможности описывать не буду, думаю понятно...
-*
-* ЧТО ИЗМЕНЕНО ПО СРАВНЕНИЮ С РАБОЧИМ (РЕАЛЬНЫМ) КЛАСОМ
-*
-* Параметры подключения перенес в класс, было в конфиге.
-* Вывод ошибок тоже был завязан на другой класс, не мудрствуя лукаво переделал на die()
-* Класс сделал полностью автономным, он покрывает, наверное, 99% потребностей среднего проэкта.
-* Расширяем, если надо вернуть результат какой нить другой структурой - пишем метод не затрагивая паралельно работающие методы.
-* Чтоб добавть новый тип плейсхолдера - добавляем в свич вызов метода и пишем метод где потставляем обработанные данные в сроку запроса.
-*/
+
 use common\Html;
+
 class Db
 {
 	
@@ -74,7 +19,7 @@ class Db
 	 * $query - Запрос в базу
 	 * $arr - масив с плейсхолдерами
 	 * $result - результат запроса
-	 * $pg - ресурс конекта
+	 * $mysql - ресурс конекта
      */
 	private static 	$instance 	= null;
 	private 		$query 		= '';
@@ -83,12 +28,12 @@ class Db
 	private 		$mysql 		= null;
 
     /**
-     * public static function pg()
+     * public static function mysql()
 	 * Возвращает экземпляр себя
 	 * Создает подключения
 	 * очищает свойства от предыдущего запроса
      *
-     * @return self::$instance->instance
+     * @return self::$instance instance
      */
     public static function mysql()// mysql///////////////////////////////////////////////////////////////////////////////////////////////////////
     {
@@ -178,7 +123,7 @@ class Db
 
     /**
      * private function getArr($res)
-	 * while ($r = pg_fetch_assoc($res))
+	 * while ($r = mysql_fetch_assoc($res))
 	 * Возвращает многомерный масив результата
      *
 	 * @param resurs $res
@@ -199,7 +144,7 @@ class Db
 	 * запрашивает данные с базы
 	 * Возвращает одномерный масив результата
      *
-     * @return array $this->getRow($result);
+     * @return array $result->fetch_assoc();
      */
 	public function one()
     {
@@ -239,7 +184,7 @@ class Db
      * public function cud($f = '')
 	 * create, update, delete
 	 * 
-     * @param str $f стобец или поля через запятею для возврата затронутых строк, insertId,  и т. д. (RETURNING)
+     * @param str $f id||affected
 
      * @return mixed $result
      */
@@ -319,7 +264,7 @@ class Db
 	 * 
 	 * @param str $rep метка в запросе
      * @param array $arr масив для SET
-     * @return $this->query
+     * @return void
      */
 	public function createSet($rep, $arr)
     {
@@ -356,7 +301,7 @@ class Db
      */
 	private function escapeName($rep, $val)
     {
-		$this->query = str_replace(':' . $rep, $val, $this->query);
+		$this->query = str_replace(':' . $rep, '`' . $val . '`', $this->query);
     }
 
     /**

@@ -104,62 +104,6 @@ final class Form
   		return $html;
 	}
 
-	public function files($name)
-	{
-		$this->js($name);
-		
-		$str = '';
-		if (isset (self::$rules[$name]['options'])) {
-			foreach (self::$rules[$name]['options'] as $key => $val) $str .= ' ' . $key . '="' . $val . '"';
-		}
-		
-		$error = '';
-		$class = 'form-label';
-		if (Config::get(self::$rules['begin']['options']['name'] . 'FormError', self::$rules[$name]['options']['name'])) {
-			$error = self::$rules[$name]['error'];
-			$class = 'form-error';
-		}
-		
-		self::$html .= '<div class="form-wrap-input">';
-		if (isset (self::$rules[$name]['label'])) {
-			self::$html .= '<div class="' . $class . '" id="form-' . self::$rules['begin']['options']['name'] . '-label-' 
-			. self::$rules[$name]['options']['name'] . '">' 
-			. self::$rules[$name]['label'] . ' &nbsp; <span id="form-' . self::$rules['begin']['options']['name'] . '-error-' 
-			. self::$rules[$name]['options']['name'] . '">' . $error . '</span></div>';
-		}
-
-		self::$html .= '<input' . $str . '>';
-		self::$html .= '</div>';
-		
-		return $this;
-	}
-
-    /**
-	 * public function save()
-     * создаем кнопку отправки формы
-	 * 
-	 * @return $this Возвращаем  экземпляр класса
-     */
-	public function save()
-	{
-		$str = '';
-
-		// Спорное решение. Без javascript отправить форму будет невозможно. Чтоб отправить без javascript закоментируйте foreach
-		foreach (self::$rules as $key => $val) {
-			if (isset (self::$rules[$key]['rules']['required']) and self::$rules[$key]['rules']['required'] == 1) $str = ' disabled="disabled"';
-		}
-		
-		self::$html .= '<div class="form-wrap-input">';
-			self::$html .= '<input name="form-' . self::$rules['begin']['options']['name'] . '-submit" type="submit" value="Сохранить"' . $str . '>';
-		self::$html .= '</div>';
-		
-		return $this;
-	}
-
-    /**
-	 * private function js($name)
-     * генерируем javascript который вешает события на инпуты для проверки форм
-     */
 	private function js($name) 
 	{
 		self::$js .= '$(\'input[name="' . self::$rules[$name]['options']['name'] . '"]\').
@@ -176,51 +120,4 @@ final class Form
 					);
 			});';
 	}
-	
-    /**
-	 * public function text($name)
-     * создает тег <input type="text">
-	 * $param $name првязка к rules
-	 * @return $this Возвращаем  экземпляр класса
-     */
-	public function text($name)
-    {
-		$this->js($name);
-
-		$str = '';
-		$hidden = '<input type="hidden" name="form-' . self::$rules['begin']['options']['name'] . '-disabled" value="1">';
-		if (isset (self::$rules[$name]['options'])) {
-			foreach (self::$rules[$name]['options'] as $key => $val) $str .= ' ' . $key . '="' . $val . '"';
-		}
-		if (Config::get('post', self::$rules[$name]['options']['name']) !== null) {
-			if (self::$rules[$name]['rules']['valid'] == 'date'){
-				$arr = explode('-', Config::get('post', self::$rules[$name]['options']['name']));
-				$val = $arr[1] . '/' . $arr[2] . '/' . $arr[0];
-			} else $val = Config::get('post', self::$rules[$name]['options']['name']);
-			$str .= ' value="' . $val . '"';
-			$hidden = '';
-		}
-
-		self::$html .= '<div class="form-wrap-input">';
-		
-		$error = '';
-		$class = 'form-label';
-		if (Config::get(self::$rules['begin']['options']['name'] . 'FormError', self::$rules[$name]['options']['name'])) {
-			$error = self::$rules[$name]['error'];
-			$class = 'form-error';
-		}
-		
-		if (isset (self::$rules[$name]['label'])) {
-
-			self::$html .= '<div class="' . $class . '" id="form-' . self::$rules['begin']['options']['name'] . '-label-' 
-				. self::$rules[$name]['options']['name'] . '">' 
-				. self::$rules[$name]['label'] . ' &nbsp; <span id="form-' . self::$rules['begin']['options']['name'] . '-error-' 
-				. self::$rules[$name]['options']['name'] . '">' . $error . $hidden . '</span></div>';
-		}
-
-		self::$html .= '<input' . $str . '>';
-		self::$html .= '</div>';
-
-		return $this;
-    }
 }

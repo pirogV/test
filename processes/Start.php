@@ -24,13 +24,6 @@ final class Start
 		}
     }
 
-	/**
-	 * 
-	 * 
-	 * Разбираем $_SERVER['REQUEST_URI'] извлекаем параметры, подключам контроллер, темплейт.
-	 * 
-	 * @author Виктор Пирог
-	 */
 	public function run()
     {
 		$this->parseQuery();
@@ -41,6 +34,13 @@ final class Start
 		}
     }
 
+	/**
+	 * private function parseQuery()
+	 * 
+	 * Разбираем $_SERVER['REQUEST_URI'] извлекаем параметры, подключам контроллер, темплейт.
+	 * 
+	 * @return void
+	 */
     private function parseQuery()
     {
 
@@ -67,6 +67,13 @@ final class Start
 		Registry::set('get', array_slice($arr, 2));
 	}
 
+	/**
+	 * private function route()
+	 * 
+	 * Маршрутизация
+	 * 
+	 * @return void
+	 */
     private function route()
     {
 		include __DIR__ . '/controllers/' . ucfirst(Registry::get('controller')) . 'Controller.php';
