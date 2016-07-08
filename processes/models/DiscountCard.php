@@ -1,10 +1,5 @@
 <?php
-/**
-* CatalogModel extends Catalog
-* модель каталога
-* @author Victior Pirog <pirog.v@gmail.com>
-* @copyright 2015-2016 monchul.com
-*/
+
 namespace models;
 
 use config\Registry;
@@ -80,12 +75,6 @@ class DiscountCard
 		$this->where = $str;
 	}
 
-	/**
-	* setInfo ($uid)
-	* устанавливаем инфу для текущего каталога
-	* @param string $uid alias
-	* @return array $info
-	*/
 	public function getAllCard ()
 	{
 		$this->where();

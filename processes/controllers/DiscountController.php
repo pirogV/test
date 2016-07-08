@@ -1,11 +1,6 @@
 <?php
 namespace controllers;
-/** 
-* CatalogController extends Controller
-* контроллер для каталога
-* @author Victior Pirog <pirog.v@gmail.com>
-* @copyright 2015-2016 monchul.com
-*/
+
 use common\Html;
 use common\Controller;
 use models\DiscountCard;
@@ -14,17 +9,6 @@ use config\Registry;
 class DiscountController extends Controller
 {
 
-	/**
-	* indexAction()
-	* Действие контролера каталога по умолчанию
-	* кешируется
-	* устанавливаем дефолтный uid для стартовой страницы
-	* извлекаем инфу по текущему расделу
-	* если непопадание - 404
-	* звлекаем каталог из кеша или базы
-	* вызывается без параметров
-	* @return void
-	*/
 	public function indexAction ()
 	{
 		$model = new DiscountCard ();

@@ -35,7 +35,7 @@ class Db
      *
      * @return self::$instance instance
      */
-    public static function mysql()// mysql///////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static function mysql()
     {
         if (!(self::$instance instanceof self)) {
             self::$instance = new self();
