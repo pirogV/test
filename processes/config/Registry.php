@@ -28,19 +28,14 @@ class Registry
 	public static function get($a, $b = null)
 	{
 		if (isset(self::$arr[$a])) {
-			
 			if ($b !== null) {
-				
 				if(isset(self::$arr[$a][$b])) {
 					return self::$arr[$a][$b];
 				} else {
 					return null;
 				}
-				
 			} else {
-				
-				return self::$arr[$a];
-				
+				return self::$arr[$a];				
 			}
 		}
 

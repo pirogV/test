@@ -8,4 +8,3 @@ use config\Registry;
 		Registry::view();
 	
 	echo '<br><hr>-->';
-		?>

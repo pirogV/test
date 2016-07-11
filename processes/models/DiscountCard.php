@@ -43,7 +43,7 @@ class DiscountCard
     {
         return [
             ['series', 'series', 3, 3, ''],
-            ['id', 'number', 1, 10000000000, ''],
+            ['id', 'number', 1, 4294967295, ''],
 			['number', 'number', 1, 100, ''],
 			['issue_date', 'date', ''],
 			['expiration_date', 'entry', '1|6|12', ''],
@@ -146,6 +146,13 @@ class DiscountCard
 		return $status;
 	}
 
+	public function deactivationCard ()
+	{
+		return Db::mysql()
+			->query('UPDATE card SET status = 2 WHERE issue_date <= DATE_SUB(CURRENT_DATE, INTERVAL expiration_date MONTH)')
+			->cud('affected');
+	}
+
 	public function createCard ()
 	{
 		$i = 0;
@@ -164,7 +171,7 @@ class DiscountCard
 
 	public function deleteCard ($id)
 	{
-		Db::mysql()
+		return Db::mysql()
 			->query('DELETE FROM card WHERE  id = :id')
 			->arr(['int:id' => $id])
 			->cud();

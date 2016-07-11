@@ -1,4 +1,5 @@
 <?php
+
 namespace controllers;
 
 use common\Html;
@@ -32,7 +33,6 @@ class DiscountController extends Controller
 		Registry::set ('title', 'Дисконтные карточки');
 		Registry::set ('description', 'Дисконтные карточки');
 		Registry::set ('head', 'Дисконтные карточки');
-
 	}
 
 	public function statusAction ()
@@ -53,8 +53,10 @@ class DiscountController extends Controller
 		$model->pagination ();
 
 		if (!$model->allCard) {
+			$this->render ('form', $model);
 			$this->render ('emptyCard');
 		} else {
+			$this->render ('form', $model);
 			$this->render ('allCard', $model);
 		}
 
@@ -109,5 +111,13 @@ class DiscountController extends Controller
 			Registry::set ('head', 'Создать дисконтную карточку');
 			$this->render ('createForm', $model);
 		}
+	}
+	
+	public function deactivationAction ()
+	{
+		$model = new DiscountCard ();
+		$res = $model->deactivationCard ();
+		echo 'Деактивировано ' . $res . ' карт';
+		
 	}
 }

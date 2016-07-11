@@ -4,18 +4,13 @@ namespace common;
 
 use config\Registry;
 use common\Html;
-/**
- * Класс валидации входящих данных
- */
-final class Validate
+
+class Validate
 {
 	private static $flag = true;
 	private static $data = [];
 	private static $error = [];
-    /**
-     * Возвращает экземпляр себя
-     * @return self::$instance
-     */
+
     public static function isValid ($rules, $data)
     {
 		foreach ($rules as $key => $val) {
@@ -78,12 +73,6 @@ final class Validate
 		}
 	}
 
-    /**
-	 * private function textValid($rules)
-     * проверяем текстовое поле
-	 * @param rules правилавалидации
-	 * @return bollean 
-     */
 	private static function seriesValid($data, $name, $min, $max, $required)
 	{
 		self::$data[$name] = $data;

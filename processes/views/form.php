@@ -16,7 +16,7 @@ use common\Form;
 			<?=Form::checkboxArray('status', $model->status, 'Статус')?>
 		</div>
 		<div class="mar">
-			<?=Form::submitAjax('/', 'box-card', 'Поиск', '<a href="/discount/create" class="pagination">Создать дисконтную карточку</a>')?>
+			<?=Form::submitAjax('/', 'box-card', 'Поиск', '<a href="/discount/create" class="pagination">Создать дисконтную карточку</a> &nbsp; <a href="/discount/deactivation" class="pagination ajax" box="deactivation">Деактивировать с истёкшим сроком</a> &nbsp; <span id="deactivation"></span>')?>
 		</div>
 		<div class="form-wrap-input"><div class="LN"></div></div>
 	<?=Form::end()?>

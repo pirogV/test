@@ -5,7 +5,7 @@ use common\Form;
 ?>
 <div id="box-card">
 <div class="P layout">
-<div><a href="/">Назад</a></div>
+<div><a href="/">Все карты</a></div>
 	<?=Form::begin($model->rulesCreate(), ['name' => 'card', 'head' => '', 'method' => 'post'])?>
 		<div class="col1">
 			<?=Form::text50('series', 'Серия')?>

@@ -1,8 +1,12 @@
+<?php 
 
-<?php use common\Html ?>
+use common\Html;
 
+?>
+
+<div id="del-card">
 <div class="P layout">
-	<div><a href="/">Назад</a></div>
+	<div><a href="/">Все карты</a></div>
 	<div class="col3">
 		<h3>Карточка</h3>
 		<div class="tr LN">
@@ -23,15 +27,15 @@
 		</div>
 		<div class="tr LN">
 			<div class="left">Статус</div>
-			<div class="right"  id="status-<?=$id?>"><?=$model->getStatusLink($status, $id)?></div>
+			<div class="right" id="status-<?=$id?>"><?=$model->getStatusLink($status, $id)?></div>
 		</div>
 		<div class="tr LN">
 			<div class="left">Сумма покупок</div>
-			<div class="right"  id="status-<?=$id?>"><?=$sum_price?></div>
+			<div class="right"><?=$sum_price?></div>
 		</div>
 		<div class="tr LN">
 			<div class="left">Последняя дата использования</div>
-			<div class="right"  id="status-<?=$id?>"><?=$last_date?></div>
+			<div class="right"><?=$last_date?></div>
 		</div>
 	</div>
 	<div class="col4">
@@ -59,4 +63,6 @@
 		<?php endif; ?>
 	</div>
 	<div class="LN mar2"></div>
+	<br><div><a href="/discount/delete/0/<?=$id?>/1" form="card" class="ajax-confirm pagination red" box="del-card">Удалить</a></div>
+</div>
 </div>

@@ -1,7 +1,7 @@
 <?php
 namespace common;
 
-final class Html
+class Html
 {
 
     public static function p($t)
