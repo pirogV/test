@@ -10,6 +10,8 @@ final class Html
 		 print_r ($t);
 		 if ($t === null) echo 'NULL';
 		 if ($t === true) echo 'TRUE';
+		 if ($t === false) echo 'FALSE';
+		 if ($t === '') echo 'Пустая строка';
 		 echo '</div></pre>';
     }
 	

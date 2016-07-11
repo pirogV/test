@@ -6,7 +6,7 @@ use common\Form;
 <div id="box-card">
 <div class="P layout">
 <div><a href="/">Назад</a></div>
-	<?=Form::begin($model->rules(), ['name' => 'card', 'head' => '', 'method' => 'post'])?>
+	<?=Form::begin($model->rulesCreate(), ['name' => 'card', 'head' => '', 'method' => 'post'])?>
 		<div class="col1">
 			<?=Form::text50('series', 'Серия')?>
 			<?=Form::radio('expiration_date', $model->expiration_date, 'Срок действия')?>

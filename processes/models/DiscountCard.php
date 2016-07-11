@@ -30,46 +30,55 @@ class DiscountCard
 		$this->start = $this->page * $this->limit;
 	}
 	
-	public function rules()
+	public function rulesCreate()
     {
         return [
-            ['series', 'series'],
-            ['id', 'number'],
-			['number', 'number'],
-			['issue_date', 'date'],
-			['expiration_date', 'entry', '1|6|12'],
-			['status', 'entry', '0|1|2'],
+            ['series', 'series', 3, 3, 'required'],
+			['number', 'number', 1, 100, 'required'],
+			['expiration_date', 'entry', '1|6|12', 'required']
+        ];
+    }
+	
+	public function rulesSearch()
+    {
+        return [
+            ['series', 'series', 3, 3, ''],
+            ['id', 'number', 1, 10000000000, ''],
+			['number', 'number', 1, 100, ''],
+			['issue_date', 'date', ''],
+			['expiration_date', 'entry', '1|6|12', ''],
+			['status', 'entry', '0|1|2', '']
         ];
     }
 	
 	public function where ()
 	{
 		$str = '';
-		
-		if(!empty($_POST['series'])) {
+
+		if(!empty(Registry::get('post', 'series'))) {
 			$str .= ' AND series = :series';
-			$this->whereArr['str:series'] = $_POST['series'];
+			$this->whereArr['str:series'] = Registry::get('post', 'series');
 		}
-		
-		if(!empty($_POST['id'])) {
+
+		if(!empty(Registry::get('post', 'id'))) {
 			$str .= ' AND id = :id';
-			$this->whereArr['int:id'] = $_POST['id'];
+			$this->whereArr['int:id'] = Registry::get('post', 'id');
 		}
 		
-		if(!empty($_POST['issue_date'])) {
+		if(!empty(Registry::get('post', 'issue_date'))) {
 			$str .= ' AND issue_date BETWEEN :issue_date1 AND :issue_date2';
-			$this->whereArr['str:issue_date1'] = $_POST['issue_date'] . ' 00:00:00';
-			$this->whereArr['str:issue_date2'] = $_POST['issue_date'] . ' 23:59:59';
+			$this->whereArr['str:issue_date1'] = Registry::get('post', 'issue_date') . ' 00:00:00';
+			$this->whereArr['str:issue_date2'] = Registry::get('post', 'issue_date') . ' 23:59:59';
 		}
 
-		if(!empty($_POST['expiration_date'])) {
+		if(!empty(Registry::get('post', 'expiration_date'))) {
 			$str .= ' AND expiration_date IN (:expiration_date)';
-			$this->whereArr['in:expiration_date'] = $_POST['expiration_date'];
+			$this->whereArr['in:expiration_date'] = Registry::get('post', 'expiration_date');
 		}
 
-		if(!empty($_POST['status'])) {
+		if(!empty(Registry::get('post', 'status'))) {
 			$str .= ' AND status IN (:status)';
-			$this->whereArr['in:status'] = $_POST['status'];
+			$this->whereArr['in:status'] = Registry::get('post', 'status');
 		}
 
 		if ($str != '') $str = ' WHERE ' . trim($str, ' AND');
@@ -142,14 +151,14 @@ class DiscountCard
 		$i = 0;
 		$str = '';
 
-		while ($i < $_POST['number']){
+		while ($i < Registry::get('post', 'number')){
 			$str .= '(:series, :expiration_date),';
 			$i++;
 		}
 
 		return Db::mysql()
 			->query('INSERT INTO `card` (`series`, `expiration_date`) VALUES ' . trim($str, ','))
-			->arr(['str:series' => $_POST['series'], 'int:expiration_date' => $_POST['expiration_date'] ])
+			->arr(['str:series' => Registry::get('post', 'series'), 'int:expiration_date' => Registry::get('post', 'expiration_date') ])
 			->cud('id');
 	}
 

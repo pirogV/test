@@ -4,7 +4,7 @@ use common\Html;
 
 ?>
 
-<div id="box-card">
+
 <div class="P">
 	<table class="tbl" width="100%"  border="1">
 		<tr>

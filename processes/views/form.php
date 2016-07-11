@@ -3,9 +3,9 @@
 use common\Form;
 
 ?>
-
+<div id="box-card">
 <div class="P layout">
-	<?=Form::begin($model->rules(), ['name' => 'card', 'head' => 'Фильтр'])?>
+	<?=Form::begin($model->rulesSearch(), ['name' => 'card', 'head' => 'Фильтр'])?>
 		<div class="col1">
 			<?=Form::text50('series', 'Серия')?>
 			<?=Form::text50('id', 'Номер')?>

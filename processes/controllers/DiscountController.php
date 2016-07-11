@@ -5,6 +5,7 @@ use common\Html;
 use common\Controller;
 use models\DiscountCard;
 use config\Registry;
+use common\Validate;
 
 class DiscountController extends Controller
 {
@@ -13,14 +14,19 @@ class DiscountController extends Controller
 	{
 		$model = new DiscountCard ();
 
-		$model->getAllCard ();
-		
-		if (!$model->allCard['cards']) {
-			$this->render ('emptyCard');
+		if (Validate::isValid($model->rulesSearch(), $_POST)) {
+			$model->getAllCard ();
+			if (!$model->allCard['cards']) {
+				$this->render ('form', $model);
+				$this->render ('emptyCard');
+			} else {
+				$model->pagination ();
+				$this->render ('form', $model);
+				$this->render ('allCard', $model);
+			}
 		} else {
-			if (!Registry::get('ajax')) $this->render ('form', $model);
-			$model->pagination ();
-			$this->render ('allCard', $model);
+			$this->render ('form', $model);
+			$this->render ('emptyCard');
 		}
 
 		Registry::set ('title', 'Дисконтные карточки');
@@ -84,7 +90,7 @@ class DiscountController extends Controller
 		Registry::set ('title', 'Дисконтные карточки');
 		Registry::set ('description', 'Дисконтные карточки');
 
-		if (!empty($_POST['series'])) {
+		if (Validate::isValid($model->rulesCreate(), $_POST)) {
 			$id = $model->createCard ();
 
 			$model->getCard ($id);
