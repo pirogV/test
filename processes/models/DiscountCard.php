@@ -34,7 +34,8 @@ class DiscountCard
     {
         return [
             ['series', 'series'],
-            ['number', 'number'],
+            ['id', 'number'],
+			['number', 'number'],
 			['issue_date', 'date'],
 			['expiration_date', 'entry', '1|6|12'],
 			['status', 'entry', '0|1|2'],
@@ -50,9 +51,9 @@ class DiscountCard
 			$this->whereArr['str:series'] = $_POST['series'];
 		}
 		
-		if(!empty($_POST['number'])) {
-			$str .= ' AND number = :number';
-			$this->whereArr['int:number'] = $_POST['number'];
+		if(!empty($_POST['id'])) {
+			$str .= ' AND id = :id';
+			$this->whereArr['int:id'] = $_POST['id'];
 		}
 		
 		if(!empty($_POST['issue_date'])) {
@@ -84,18 +85,38 @@ class DiscountCard
 			->arr($arr)
 			->all();
 	}
-	
+
 	public function getCard ($id)
 	{
 		$this->card = Db::mysql()
-			->query('SELECT * FROM card WHERE id = :id')
+			->query('SELECT `card`.`id`, `series`, `issue_date`, `expiration_date`, `status`,
+					SUM(`price` * `count`) AS sum_price,
+					MAX(`date`) AS last_date
+				FROM `card` LEFT JOIN `order`
+				ON `card`.`id` = `order`.`id_card`
+				WHERE `card`.`id` = :id
+				GROUP BY `id_card`')
 			->arr(['int:id' => $id])
 			->one();
+			
+		if (!$this->card) return null;
+		
+		if (!$this->card['last_date']) {
+			$this->card['sum_price'] = 0.00;
+			$this->card['last_date'] = 'Не использовалась';
+			$this->card['history'] = [];
+		} else {
+			$this->card['history'] = Db::mysql()
+			->query('SELECT * FROM `order` WHERE `id_card` = :id')
+			->arr(['int:id' => $id])
+			->all();
+		}
 	}
 
 	public function getStatusLink ($status, $id)
 	{
 		$class = ['yellow', 'green'];
+		
 		if ($status != 2) {
 			return '<a href="/discount/status/' . $status . '/' . $id . '" box="status-' . $id . '" class="ajax ' .$class[$status]  . '">' . $this->status[$status] . '</a>';
 		} else {
@@ -106,12 +127,30 @@ class DiscountCard
 	public function updateStatus ($status, $id)
 	{
 		$status == 0 ? $newStatus = 1 : $newStatus = 0;
+		
 		$r = Db::mysql()
 			->query('UPDATE card SET :set WHERE id = :id')
 			->arr(['set:set' => ['status' => $newStatus], 'int:id' => $id])
 			->cud();
+			
 		if ($r > 0) return $newStatus;
 		return $status;
+	}
+
+	public function createCard ()
+	{
+		$i = 0;
+		$str = '';
+
+		while ($i < $_POST['number']){
+			$str .= '(:series, :expiration_date),';
+			$i++;
+		}
+
+		return Db::mysql()
+			->query('INSERT INTO `card` (`series`, `expiration_date`) VALUES ' . trim($str, ','))
+			->arr(['str:series' => $_POST['series'], 'int:expiration_date' => $_POST['expiration_date'] ])
+			->cud('id');
 	}
 
 	public function deleteCard ($id)

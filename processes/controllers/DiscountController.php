@@ -28,7 +28,7 @@ class DiscountController extends Controller
 		Registry::set ('head', 'Дисконтные карточки');
 
 	}
-	
+
 	public function statusAction ()
 	{
 		$model = new DiscountCard ();
@@ -36,7 +36,7 @@ class DiscountController extends Controller
 		$newStatus = $model->updateStatus (Registry::get('get', 0), Registry::get('get', 1));
 		echo $model->getStatusLink ($newStatus, Registry::get('get', 1));
 	}
-	
+
 	public function deleteAction ()
 	{
 		$model = new DiscountCard ();
@@ -63,15 +63,45 @@ class DiscountController extends Controller
 
 		$model->getCard (Registry::get('get', 0));
 		
+		Registry::set ('title', 'Дисконтные карточки');
+		Registry::set ('description', 'Дисконтные карточки');
+
 		if (!$model->card) {
 			$this->render ('emptyCard');
+			Registry::set ('head', 'Дисконтная карточка не найдена');
 		} else {
 			$this->toVar = $model->card;
 			$this->render ('card', $model);
+
+			Registry::set ('head', 'Дисконтная карточка #' . $this->toVar['id']);
 		}
+	}
+
+	public function createAction ()
+	{
+		$model = new DiscountCard ();
 
 		Registry::set ('title', 'Дисконтные карточки');
 		Registry::set ('description', 'Дисконтные карточки');
-		Registry::set ('head', 'Дисконтные карточки');
+
+		if (!empty($_POST['series'])) {
+			$id = $model->createCard ();
+
+			$model->getCard ($id);
+
+			if (!$model->card) {
+				$this->render ('emptyCard');
+				Registry::set ('head', 'Дисконтная карточка не найдена');
+			} else {
+				$this->toVar = $model->card;
+				$this->render ('card', $model);
+
+				Registry::set ('head', 'Дисконтные карточки созданы (показана последняя)');
+			}
+
+		} else {
+			Registry::set ('head', 'Создать дисконтную карточку');
+			$this->render ('createForm', $model);
+		}
 	}
 }

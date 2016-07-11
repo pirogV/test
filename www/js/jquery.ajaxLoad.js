@@ -10,7 +10,7 @@
 			cache		: false,
 			datatype	: 'html'
 		}, options);
-		
+
 		box = this;
 
 		$.ajax({

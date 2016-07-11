@@ -33,7 +33,7 @@ final class Form
 
 		$html = '<form' . $str . '>';
 		
-		if (isset ($options['head'])) $html .= '<h3>' . $options['head'] . '</h3>';
+		if (isset ($options['head'])) $html .= '<h3>' . $options['head'] . '</h3><div class="LN"></div>';
 		return $html;
     }
 
@@ -48,20 +48,19 @@ final class Form
 		Registry::append('addHead', '<script language="JavaScript" type="text/javascript">$(document).ready( function (){' . self::$js . '} )</script>');
 		return '</form>';
     }
-	
+
     /**
 	 * public function files($name)
      * закрывает тег <input type="file">
 	 * $param $name првязка к rules
 	 * @return $this Возвращаем  экземпляр класса
      */
-	 
-	public static function text25($name, $label)
+	public static function text50($name, $label)
 	{
 		$error = '';
 		$html = '<div class="form-wrap-input">';
 		$html .= '<div class="form-wrap-label" id="form-' . $name . '-label">' . $label . ' &nbsp; <span id="form-' . $name . '-error">' . $error . '</span></div>';
-		$html .= '<input style="width:25%" name="' . $name . '" value="">';
+		$html .= '<input style="width:50%" name="' . $name . '" value="">';
 		$html .= '</div>';
 
   		return $html;
@@ -95,10 +94,32 @@ final class Form
   		return $html;
 	}
 	
-	public static function submitAjax($href, $box, $link)
+	public static function radio($name, $value, $label)
+	{
+		$error = '';
+		$html = '<div class="form-wrap-input">';
+		$html .= '<div class="form-wrap-label" id="form-' . $name . '-label">' . $label . ' &nbsp; <span id="form-' . $name . '-error">' . $error . '</span></div>';
+		foreach ($value as $k => $v) {
+			$html .= '<div><label><input type="radio" name="' . $name . '" value="' . $k . '">' . $v . '</label></div>';
+		}
+		$html .= '</div>';
+
+  		return $html;
+	}
+	
+	public static function submitAjax($href, $box, $link, $append = '')
 	{
 		$html = '<div class="form-wrap-input">';
-		$html .= '<a class="ajax pagination" box="' . $box . '" form="' . self::$name . '" href="' . $href . '">' . $link . '</a>';
+		$html .= '<a class="ajax pagination" box="' . $box . '" form="' . self::$name . '" href="' . $href . '">' . $link . '</a> &nbsp ' . $append;
+		$html .= '</div>';
+
+  		return $html;
+	}
+	
+	public static function submit()
+	{
+		$html = '<div class="form-wrap-input">';
+		$html .= '<input type="submit" value="Сохранить">';
 		$html .= '</div>';
 
   		return $html;
