@@ -149,7 +149,7 @@ class DiscountCard
 	public function deactivationCard ()
 	{
 		return Db::mysql()
-			->query('UPDATE card SET status = 2 WHERE issue_date <= DATE_SUB(CURRENT_DATE, INTERVAL expiration_date MONTH)')
+			->query('UPDATE card SET status = 2 WHERE issue_date < DATE_SUB(CURRENT_DATE, INTERVAL expiration_date MONTH)')
 			->cud('affected');
 	}
 
